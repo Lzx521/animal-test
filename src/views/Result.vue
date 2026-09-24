@@ -21,6 +21,7 @@
         <p>
           <template v-for="(seg, i) in storySegments" :key="'seg-' + i">
             <strong v-if="seg.bold" class="story-em">{{ seg.text }}</strong>
+            <span v-else-if="seg.tip" class="story-tip">{{ seg.text }}</span>
             <template v-else>{{ seg.text }}</template>
           </template>
         </p>
@@ -120,9 +121,9 @@ const storySegments = computed(() => {
   const tagList = tags.value.map((t) => cleanPhrase(t.text)).filter(Boolean)
 
   const segments = []
-  const push = (text, bold = false) => {
+  const push = (text, bold = false, tip = false) => {
     if (!text) return
-    segments.push({ text, bold })
+    segments.push({ text, bold, tip })
   }
   const pushSep = () => {
     if (segments.length) push('。')
@@ -155,7 +156,8 @@ const storySegments = computed(() => {
   }
   if (quote) {
     pushSep()
-    push(quote)
+    push(`小轩提醒您：${quote}。`, false, true)
+    return segments
   }
   if (segments.length) push('。')
   return segments
@@ -528,6 +530,14 @@ h1 {
 .story-em {
   font-weight: 700;
   color: #e94560;
+}
+
+.story-tip {
+  display: block;
+  margin-top: 10px;
+  font-weight: 600;
+  color: #c27803;
+  line-height: 1.65;
 }
 
 .action-row {
