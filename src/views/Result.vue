@@ -27,13 +27,19 @@
       </div>
 
       <div class="support-cta" data-html2canvas-ignore>
-        <button type="button" class="soft-btn gold" @click="showTip = !showTip">
-          <span>{{ showTip ? '收起赞赏码' : rewardTip }}</span>
-          <span class="chev" aria-hidden="true">{{ showTip ? '▴' : '▾' }}</span>
-        </button>
-        <div v-if="showTip" class="tip-panel">
-          <p class="tip-text">扫码赞赏，感谢支持</p>
-          <img class="qr-code" src="/assets/reward-qr.png?v=2" alt="reward qrcode" />
+        <p class="tip-hook">{{ rewardTip }}</p>
+        <div class="tip-panel" :class="{ expanded: tipExpanded }">
+          <div class="qr-clip">
+            <img class="qr-code" src="/assets/reward-qr.png?v=3" alt="赞赏码" />
+          </div>
+          <button
+            type="button"
+            class="soft-btn gold tip-toggle"
+            @click="tipExpanded ? collapseTip() : expandTip()"
+          >
+            <span>{{ tipExpanded ? '收起' : '展开看清' }}</span>
+            <span class="chev" aria-hidden="true">{{ tipExpanded ? '▴' : '▾' }}</span>
+          </button>
         </div>
       </div>
 
@@ -70,6 +76,7 @@ import {
   MAX_DIMENSION_SCORE
 } from '../data/questions'
 import { appRoot, homeShareUrl, setShareMeta } from '../utils/shareMeta'
+import { track } from '../utils/track'
 import html2canvas from 'html2canvas'
 
 const route = useRoute()
@@ -80,7 +87,9 @@ const resultCard = ref(null)
 const toastText = ref('')
 let toastTimer = null
 const shareLoadError = ref('')
-const showTip = ref(false)
+const tipExpanded = ref(false)
+let tipExpandTracked = false
+let resultViewTracked = false
 const heroImage = computed(() => {
   if (result.value.image) return result.value.image
   if (result.value.isTie) return '/assets/sibuxiang.svg'
@@ -264,7 +273,26 @@ function syncShareMeta() {
 }
 
 async function copyShare() {
+  track('share_click')
   await copyPlain(buildShareText(result.value, homeShareUrl()), '已复制，去群里贴一下')
+}
+
+function expandTip() {
+  tipExpanded.value = true
+  if (!tipExpandTracked) {
+    tipExpandTracked = true
+    track('tip_expand')
+  }
+}
+
+function collapseTip() {
+  tipExpanded.value = false
+}
+
+function trackResultViewOnce() {
+  if (resultViewTracked || !store.isFinished || !result.value?.name) return
+  resultViewTracked = true
+  track('result_view')
 }
 
 function showToast(message) {
@@ -278,6 +306,7 @@ function showToast(message) {
 async function saveCard() {
   const el = resultCard.value
   if (!el) return
+  track('save_click')
   try {
     const canvas = await html2canvas(el, {
       scale: 2,
@@ -296,7 +325,9 @@ async function saveCard() {
 }
 
 function retake() {
-  showTip.value = false
+  tipExpanded.value = false
+  tipExpandTracked = false
+  resultViewTracked = false
   sessionStorage.removeItem('animal-test-just-finished')
   store.reset()
   router.push('/')
@@ -321,6 +352,7 @@ onMounted(async () => {
   if (store.isFinished && result.value?.name) {
     sessionStorage.setItem('animal-test-just-finished', '1')
     syncShareMeta()
+    trackResultViewOnce()
   }
   await nextTick()
   if (store.isFinished) drawRadar()
@@ -332,6 +364,7 @@ watch(
     if (done) {
       sessionStorage.setItem('animal-test-just-finished', '1')
       syncShareMeta()
+      trackResultViewOnce()
       await nextTick()
       drawRadar()
     }
@@ -341,7 +374,10 @@ watch(
 watch(
   () => result.value?.name,
   (name) => {
-    if (name && store.isFinished) syncShareMeta()
+    if (name && store.isFinished) {
+      syncShareMeta()
+      trackResultViewOnce()
+    }
   }
 )
 </script>
@@ -544,6 +580,15 @@ h1 {
   margin: 0 0 12px;
 }
 
+.tip-hook {
+  margin: 0 0 8px;
+  font-size: 13px;
+  font-weight: 600;
+  color: #c27803;
+  text-align: center;
+  line-height: 1.45;
+}
+
 .footer-links {
   border-top: 1px solid #f0f0f0;
   padding-top: 12px;
@@ -610,27 +655,38 @@ h1 {
 }
 
 .tip-panel {
-  margin: 4px 0 8px;
-  animation: tipIn 0.25s ease;
-  text-align: left;
-}
-
-@keyframes tipIn {
-  from {
-    opacity: 0;
-    transform: translateY(-6px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-.tip-text {
-  font-size: 13px;
-  color: #999;
-  margin: 0 0 10px 0;
+  margin: 0 0 4px;
   text-align: center;
+}
+
+.qr-clip {
+  position: relative;
+  overflow: hidden;
+  max-height: 118px;
+  margin: 0 auto 8px;
+  transition: max-height 0.28s ease;
+  border-radius: 12px;
+}
+
+.tip-panel.expanded .qr-clip {
+  max-height: 320px;
+}
+
+.qr-clip::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 36px;
+  background: linear-gradient(to bottom, rgba(255, 255, 255, 0), #fff);
+  pointer-events: none;
+  opacity: 1;
+  transition: opacity 0.2s ease;
+}
+
+.tip-panel.expanded .qr-clip::after {
+  opacity: 0;
 }
 
 .qr-code {
@@ -640,9 +696,13 @@ h1 {
   border-radius: 12px;
   border: 2px solid #f0f0f0;
   display: block;
-  margin: 0 auto 8px;
-  background: #111;
+  margin: 0 auto;
+  background: #fff;
   object-fit: contain;
+}
+
+.tip-toggle {
+  margin-top: 0;
 }
 
 .compliance-note {

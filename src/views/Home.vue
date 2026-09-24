@@ -20,6 +20,7 @@
   import { useRouter } from 'vue-router'
   import { useQuizStore } from '../stores/quizStore'
   import { setShareMeta } from '../utils/shareMeta'
+  import { track } from '../utils/track'
 
   const router = useRouter()
   const store = useQuizStore()
@@ -29,9 +30,11 @@
       title: '大五人格 · 野生版',
       description: '31 道生活题，3 分钟测出你的职场人设。建议@3个同事一起测，互相公开处刑（友好版）。'
     })
+    track('home_view')
   })
 
   function start() {
+    track('quiz_start')
     sessionStorage.removeItem('animal-test-just-finished')
     store.reset()
     router.push('/quiz')

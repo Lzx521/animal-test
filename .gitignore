@@ -26,6 +26,9 @@ dist-ssr
 .vercel
 .wrangler
 
+.env
+.env.local
+
 .superpowers/
 Untitled
 
