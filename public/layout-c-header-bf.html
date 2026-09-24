@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>方案示意：C + 大五放头部</title>
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif;
+      background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+      min-height: 100vh;
+      padding: 20px 16px 40px;
+      color: #1a1a2e;
+    }
+    .wrap { max-width: 420px; margin: 0 auto; }
+    .page-title { text-align: center; font-size: 18px; margin: 0 0 6px; }
+    .hint { text-align: center; font-size: 13px; color: #666; margin: 0 0 16px; line-height: 1.5; }
+    .card {
+      background: #fff;
+      border-radius: 24px;
+      padding: 28px 22px;
+      box-shadow: 0 16px 40px rgba(0,0,0,.08);
+      text-align: center;
+    }
+    .emoji { font-size: 64px; line-height: 1; }
+    h1 { font-size: 24px; margin: 6px 0 8px; }
+    .subtitle {
+      display: inline-block;
+      font-size: 13px;
+      font-weight: 600;
+      color: #e94560;
+      background: #fce8eb;
+      padding: 4px 12px;
+      border-radius: 999px;
+      margin-bottom: 10px;
+    }
+
+    /* 头部：大五人格入口 */
+    .header-bf {
+      margin: 0 0 14px;
+      text-align: left;
+    }
+    .bf-toggle {
+      width: 100%;
+      background: #f5f7ff;
+      color: #4c6ef5;
+      border: 1px dashed #b6c2ff;
+      border-radius: 12px;
+      padding: 10px 12px;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      text-align: left;
+    }
+    .bf-panel {
+      display: none;
+      margin-top: 8px;
+      background: #f8f9ff;
+      border-radius: 12px;
+      padding: 12px;
+      font-size: 12px;
+      color: #555;
+      line-height: 1.6;
+    }
+    .bf-panel.open { display: block; }
+    .bf-row { padding: 6px 0; border-bottom: 1px solid #e8ebf7; }
+    .bf-row:last-child { border-bottom: none; }
+    .bf-name { color: #364fc7; font-weight: 700; }
+
+    .radar {
+      width: 140px; height: 140px; margin: 8px auto 12px; border-radius: 50%;
+      background: radial-gradient(circle at 50% 45%, rgba(233,69,96,.3), transparent 55%),
+        conic-gradient(#ff6b6b, #4ecdc4, #ff9f43, #a29bfe, #fdcb6e, #ff6b6b);
+      display: grid; place-items: center; color: #fff; font-size: 12px; font-weight: 600;
+      text-shadow: 0 1px 3px rgba(0,0,0,.3);
+    }
+    .tags { display: flex; flex-wrap: wrap; gap: 6px; justify-content: center; margin-bottom: 12px; }
+    .tag { font-size: 12px; padding: 3px 10px; border-radius: 999px; background: #fff3e0; color: #e67e22; }
+    .block {
+      text-align: left; background: #f8f9fb; border-radius: 12px;
+      padding: 10px 12px; margin-bottom: 8px; font-size: 13px; color: #555; line-height: 1.55;
+    }
+    .block b { display: block; font-size: 12px; color: #1a1a2e; margin-bottom: 4px; }
+    .quote {
+      text-align: left; border-left: 3px solid #e94560; padding: 8px 10px;
+      margin: 10px 0; font-size: 13px; color: #444; font-style: italic; background: #fffafb;
+    }
+    .advice {
+      text-align: left; background: #fce8eb; color: #e94560;
+      border-radius: 12px; padding: 10px 12px; font-size: 13px; margin-bottom: 16px;
+    }
+
+    /* 底部 C：双列 + 文字链 */
+    .actions {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 12px;
+    }
+    .btn {
+      flex: 1;
+      border-radius: 50px;
+      padding: 12px 8px;
+      font-size: 13px;
+      font-weight: 600;
+      text-align: center;
+      border: none;
+    }
+    .btn-primary { background: #e94560; color: #fff; }
+    .btn-outline { background: #fff; color: #e94560; border: 1.5px solid #e94560; }
+    .links {
+      border-top: 1px solid #f0f0f0;
+      padding-top: 8px;
+    }
+    .link {
+      display: block;
+      padding: 9px 0;
+      font-size: 13px;
+      color: #c27803;
+      text-decoration: none;
+    }
+    .link.muted { color: #999; font-size: 12px; }
+    .tip-box {
+      display: none;
+      margin-top: 8px;
+      padding: 10px;
+      background: #fff8f0;
+      border-radius: 12px;
+      font-size: 12px;
+      color: #888;
+    }
+    .tip-box.open { display: block; }
+    .qr {
+      width: 140px; height: 180px; margin: 8px auto 0; border-radius: 8px;
+      background: #222; color: #aaa; display: grid; place-items: center; font-size: 12px;
+    }
+    .callout {
+      margin-top: 16px;
+      background: #fff;
+      border-radius: 14px;
+      padding: 12px 14px;
+      font-size: 13px;
+      color: #555;
+      line-height: 1.6;
+      box-shadow: 0 6px 16px rgba(0,0,0,.05);
+    }
+    .callout strong { color: #e94560; }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <h1 class="page-title">设计示意：C + 大五放头部</h1>
+    <p class="hint">点「大五人格对照」和「82年的可乐」可体验展开。满意回「可以改」，要调再说。</p>
+
+    <div class="card">
+      <div class="emoji">🐙</div>
+      <h1>章鱼哥</h1>
+      <p class="subtitle">又丧又清醒 · 脑洞大到漏风</p>
+
+      <!-- 头部：大五 -->
+      <div class="header-bf">
+        <button type="button" class="bf-toggle" id="bfBtn">🧠 大五人格对照（点击展开）</button>
+        <div class="bf-panel" id="bfPanel">
+          <div class="bf-row">🐟 摸鱼 → <span class="bf-name">尽责性</span> Conscientiousness</div>
+          <div class="bf-row">🎯 显眼 → <span class="bf-name">外向性</span> Extraversion</div>
+          <div class="bf-row">🗡️ 怼人 → <span class="bf-name">宜人性</span> Agreeableness</div>
+          <div class="bf-row">🎬 内心戏 → <span class="bf-name">神经质</span> Neuroticism</div>
+          <div class="bf-row">💡 脑洞 → <span class="bf-name">开放性</span> Openness</div>
+          <p style="margin:8px 0 0;font-size:11px;color:#999;">仅供娱乐对照，不构成专业心理评估。</p>
+        </div>
+      </div>
+
+      <div class="radar">雷达示意</div>
+      <div class="tags">
+        <span class="tag">脑洞漏风</span>
+        <span class="tag" style="background:#e8f5e9;color:#2e7d32">离谱但有用</span>
+      </div>
+
+      <div class="block"><b>👀 同事眼中的你</b>「正经问题，不正经解法，意外能用。」</div>
+      <div class="block" style="background:#eefaf3"><b>✨ 适合你</b>头脑风暴、卡住时的换角度救援</div>
+      <div class="block" style="background:#fef0f2"><b>⚡ 避雷时刻</b>机械填表、「按模板来别发挥」</div>
+      <div class="quote">今日金句：离谱是入口，有用是出口。</div>
+      <div class="advice">💡 灵感很好，配上一点点落地清单会更香。</div>
+
+      <!-- 底部 C -->
+      <div class="actions">
+        <button type="button" class="btn btn-primary">📋 复制分享</button>
+        <button type="button" class="btn btn-outline">📤 保存图片</button>
+      </div>
+      <div class="links">
+        <a class="link" href="#" id="tipBtn">☕ 请作者喝瓶82年的可乐</a>
+        <div class="tip-box" id="tipBox">
+          扫码赞赏区（点击后才出现）
+          <div class="qr">赞赏码</div>
+        </div>
+        <a class="link muted" href="#">重新测试</a>
+      </div>
+    </div>
+
+    <div class="callout">
+      <strong>这版结构：</strong><br>
+      1）大五入口在标题下方（头部）<br>
+      2）底部只保留并排「复制 / 保存」<br>
+      3）赞赏、重测改成轻文字链<br><br>
+      满意回聊天：<strong>可以改</strong>；要微调直接说。
+    </div>
+  </div>
+
+  <script>
+    const bfBtn = document.getElementById('bfBtn')
+    const bfPanel = document.getElementById('bfPanel')
+    let bfOpen = false
+    bfBtn.addEventListener('click', () => {
+      bfOpen = !bfOpen
+      bfPanel.classList.toggle('open', bfOpen)
+      bfBtn.textContent = bfOpen ? '收起大五人格对照' : '🧠 大五人格对照（点击展开）'
+    })
+
+    const tipBtn = document.getElementById('tipBtn')
+    const tipBox = document.getElementById('tipBox')
+    let tipOpen = false
+    tipBtn.addEventListener('click', (e) => {
+      e.preventDefault()
+      tipOpen = !tipOpen
+      tipBox.classList.toggle('open', tipOpen)
+      tipBtn.textContent = tipOpen ? '收起赞赏码' : '☕ 请作者喝瓶82年的可乐'
+    })
+  </script>
+</body>
+</html>

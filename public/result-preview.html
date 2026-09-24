@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>结果页预览</title>
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif;
+      background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+      min-height: 100vh;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    .hint { color: #666; font-size: 13px; margin: 0 0 12px; text-align: center; max-width: 420px; line-height: 1.5; }
+    .bar {
+      width: 100%; max-width: 420px;
+      display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 14px; justify-content: center;
+    }
+    .bar button {
+      border: none; border-radius: 999px; padding: 8px 12px; font-size: 12px;
+      cursor: pointer; background: #fff; color: #333;
+      box-shadow: 0 2px 8px rgba(0,0,0,.06);
+    }
+    .bar button.active { background: #e94560; color: #fff; }
+    .result-card {
+      background: white; border-radius: 24px; padding: 36px 28px;
+      max-width: 420px; width: 100%; text-align: center;
+      box-shadow: 0 20px 60px rgba(0,0,0,.1);
+    }
+    .animal-emoji { font-size: 72px; line-height: 1.1; }
+    .sibuxiang-art {
+      width: 140px; height: 140px; display: block; margin: 0 auto;
+      filter: drop-shadow(0 8px 16px rgba(26,26,46,.1));
+    }
+    h1 { font-size: 24px; margin: 4px 0 8px; color: #1a1a2e; }
+    .subtitle {
+      display: inline-block; font-size: 13px; font-weight: 600; color: #e94560;
+      background: #fce8eb; padding: 4px 14px; border-radius: 999px; margin-bottom: 12px;
+    }
+    .radar-placeholder {
+      width: 160px; height: 160px; margin: 8px auto 14px; border-radius: 50%;
+      background: radial-gradient(circle at 50% 45%, rgba(233,69,96,.35), transparent 60%),
+        conic-gradient(#ff6b6b, #4ecdc4, #ff9f43, #a29bfe, #fdcb6e, #ff6b6b);
+      display: grid; place-items: center; color: #fff; font-size: 12px; font-weight: 600;
+      text-shadow: 0 1px 3px rgba(0,0,0,.3);
+    }
+    .score-details { text-align: left; margin-bottom: 12px; }
+    .score-row { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; }
+    .score-label { width: 64px; font-size: 13px; flex-shrink: 0; }
+    .score-track { flex: 1; height: 6px; background: #f0f0f0; border-radius: 3px; overflow: hidden; }
+    .score-fill { height: 100%; border-radius: 3px; }
+    .score-value { width: 28px; font-size: 13px; font-weight: 600; text-align: right; }
+    .tags { display: flex; flex-wrap: wrap; gap: 6px; justify-content: center; margin-bottom: 14px; }
+    .tag { font-size: 12px; padding: 4px 10px; border-radius: 999px; background: #f5f5f7; }
+    .tag.hot { background: #fff3e0; color: #e67e22; }
+    .tag.cool { background: #e8f5e9; color: #2e7d32; }
+    .tag.neutral { background: #eef2ff; color: #4c6ef5; }
+    .info-block { text-align: left; background: #f8f9fb; border-radius: 14px; padding: 12px 14px; margin-bottom: 10px; }
+    .info-title { font-size: 12px; font-weight: 700; margin-bottom: 6px; }
+    .info-block p { margin: 0; font-size: 13px; color: #555; line-height: 1.6; }
+    .good { background: #eefaf3; }
+    .bad { background: #fef0f2; }
+    .quote {
+      margin: 12px 0 16px; padding: 12px 14px; border-left: 3px solid #e94560;
+      text-align: left; font-size: 14px; color: #444; line-height: 1.65; font-style: italic;
+      background: #fffafb; border-radius: 0 12px 12px 0;
+    }
+    .quote-label { font-style: normal; font-size: 11px; font-weight: 700; color: #e94560; margin-bottom: 4px; }
+    .desc { text-align: left; font-size: 15px; color: #555; line-height: 1.7; margin: 12px 0; }
+    .advice {
+      text-align: left; font-size: 14px; color: #e94560; background: #fce8eb;
+      padding: 12px 16px; border-radius: 12px; margin: 0 0 16px; line-height: 1.6;
+    }
+    .btn {
+      width: 100%; border-radius: 50px; padding: 13px; font-size: 15px; font-weight: 600;
+      margin-bottom: 10px; border: none;
+    }
+    .btn-primary { background: #e94560; color: #fff; }
+    .btn-outline { background: #fff; color: #e94560; border: 1.5px solid #e94560; }
+    .btn-ghost { background: transparent; color: #999; border: 1px solid #ddd; }
+    .tip { border-top: 1px solid #f0f0f0; padding-top: 14px; margin: 8px 0 12px; }
+    .tip-text { font-size: 13px; color: #999; margin: 0 0 8px; }
+    .qr {
+      width: 100px; height: 100px; margin: 0 auto; border-radius: 8px; border: 2px solid #f0f0f0;
+      background: #f5f5f5; display: grid; place-items: center; font-size: 12px; color: #aaa;
+    }
+    .reroll { margin-top: 14px; }
+    .reroll button {
+      border: none; background: #1a1a2e; color: #fff; border-radius: 999px;
+      padding: 10px 18px; cursor: pointer; font-size: 13px;
+    }
+  </style>
+</head>
+<body>
+  <p class="hint">结果页预览。点上方动物切换；点「换一批文案」可看随机效果。</p>
+  <div class="bar" id="tabs"></div>
+  <div class="result-card" id="card"></div>
+  <div class="reroll"><button type="button" id="reroll">换一批文案</button></div>
+
+  <script>
+    function pick(arr) { return arr[Math.floor(Math.random() * arr.length)] }
+
+    const animals = {
+      sloth: {
+        name: '闪电', emoji: '🦥',
+        subtitle: '能躺绝不坐 · DDL 是第一生产力',
+        fixedTag: '压哨绝杀选手',
+        scores: [17, 8, 9, 10, 9],
+        tags: [['摸鱼天花板','hot'],['显眼绝缘体','cool'],['压哨绝杀选手','neutral']],
+        colleagueViews: [
+          '「ta 看起来很闲，但活最后总能交……大概。」',
+          '「别问进度，问就是还在「构思」。」',
+          '「周五下午找 ta 不如找空气。」'
+        ],
+        suitedFors: ['能自己排期的长线活、深夜灵感改稿', '远程异步沟通、不急的优化类任务'],
+        avoidMoments: ['早会连环追问进度、倒计时公屏播报', '「今天必须出」且没有缓冲'],
+        quotes: [
+          '「DDL 是第一生产力，你只是把「提前完成」改名叫「压哨绝杀」。」',
+          '「提前做完？那叫剧透，我不剧透。」'
+        ],
+        desc: '办事效率慢到极致，但人家在人生 DMV 上班。',
+        advice: '偶尔提前半步，世界不会因此塌方。'
+      },
+      peacock: {
+        name: '显眼包孔雀', emoji: '🦚',
+        subtitle: '哪里有 C 位哪里就有它 · 开会必须开屏',
+        fixedTag: '摄像头已就位',
+        scores: [9, 17, 10, 11, 10],
+        tags: [['显眼包本包','hot'],['卷王预备役','cool'],['摄像头已就位','neutral']],
+        colleagueViews: [
+          '「ta 一进会议室，空气都热闹三分。」',
+          '「团建自我介绍环节的隐藏 Boss。」'
+        ],
+        suitedFors: ['需要抛砖引玉的讨论、对外演示', '路演答辩、把沉默会议救活'],
+        avoidMoments: ['领导兴头上的独角戏', '需要绝对低调背锅跑路的场合'],
+        quotes: [
+          '「你存在的意义就是让老板记住你——虽然每次都是因为讲冷笑话。」',
+          '「不开屏的孔雀，约等于没来上班。」'
+        ],
+        desc: '哪里有 C 位哪里就有你。开会必须开屏，不然白来了。',
+        advice: '偶尔把麦留给别人，聚光灯会更爱你。'
+      },
+      hedgehog: {
+        name: '怼人刺猬', emoji: '🦔',
+        subtitle: '平时缩成一团 · 惹急了扎你一手血',
+        fixedTag: '嘴硬心软',
+        scores: [9, 10, 17, 11, 10],
+        tags: [['冷却为零','hot'],['卷王预备役','cool'],['嘴硬心软','neutral']],
+        colleagueViews: [
+          '「又爱又怕：爱听你拆逻辑，怕下句点到自己。」',
+          '「「好的」两个字背后，可能藏着完整反驳提纲。」'
+        ],
+        suitedFors: ['澄清需求、戳破空话', '评审拍板、拒绝不合理加塞'],
+        avoidMoments: ['全员和谐吹捧会', '对方只想被安慰、不想被分析'],
+        quotes: [
+          '「表面说「好的」，心里已经写了 800 字反击文案，只是没发出去。」',
+          '「我不是抬杠，我是帮你把坑填上。」'
+        ],
+        desc: '平时缩成一团人畜无害，惹急了扎你一手血。嘴硬心软。',
+        advice: '刺可以竖，也记得给人递创可贴。'
+      },
+      rabbit: {
+        name: '内心戏兔子', emoji: '🐰',
+        subtitle: '风吹草动就竖耳朵 · 内心戏比甄嬛传还长',
+        fixedTag: '脑子比手快',
+        scores: [8, 9, 10, 17, 11],
+        tags: [['内心戏满档','hot'],['显眼绝缘体','cool'],['脑子比手快','neutral']],
+        colleagueViews: [
+          '「你都交了，为什么还在改第三版……」',
+          '「一句「状态不行」，能搜出五篇被裁征兆。」'
+        ],
+        suitedFors: ['质量把关、预案齐全', '上线前最后一道检查'],
+        avoidMoments: ['开放性截止时间、「差不多就行」', '老板一句模糊评价不给下文'],
+        quotes: [
+          '「老板说「状态不行」，你已经开始搜「被裁员前的 5 个征兆」了。」',
+          '「外面风平浪静，你已在脑内打完三场宫斗。」'
+        ],
+        desc: '风吹草动就竖耳朵。老板一个眼神能想三天。',
+        advice: '把最坏情况写下来，大半不会发生。'
+      },
+      octopus: {
+        name: '章鱼哥', emoji: '🐙',
+        subtitle: '又丧又清醒 · 脑洞大到漏风',
+        fixedTag: '离谱但有用',
+        scores: [9, 10, 10, 11, 17],
+        tags: [['脑洞漏风','hot'],['卷王预备役','cool'],['离谱但有用','neutral']],
+        colleagueViews: [
+          '「你这个方案……好像能行？等等是不是又跑题了？」',
+          '「正经问题，不正经解法，意外能用。」'
+        ],
+        suitedFors: ['头脑风暴、起名大会', '卡住时的换角度救援'],
+        avoidMoments: ['机械填表、「按模板来别发挥」', '只要执行不要想法的流水线'],
+        quotes: [
+          '「你提议每周四在家里办公，然后老板说「先从每天提前 1 小时上班开始」。」',
+          '「离谱是入口，有用是出口。」'
+        ],
+        desc: '脑洞大到漏风，又丧又清醒，总被现实打脸。',
+        advice: '灵感很好，配上一点点落地清单会更香。'
+      },
+      chimera: {
+        name: '职场四不像', emoji: '🦌',
+        image: '/assets/sibuxiang.svg',
+        subtitle: '人格混搭限定款 · 哪个都像又哪个都不是',
+        fixedTag: '赛博拼接怪',
+        scores: [15, 15, 12, 11, 10],
+        tags: [['摸鱼天花板','hot'],['脑洞漏风','cool'],['赛博拼接怪','neutral']],
+        colleagueViews: [
+          '「你到底是卷还是躺？——答案是：看场次。」',
+          '「今天闪电，明天孔雀，后天刺猬。」'
+        ],
+        suitedFors: ['需要切换角色的项目', '当团队万能接口人'],
+        avoidMoments: ['逼你二选一站队', '用单一 KPI 定义你'],
+        quotes: [
+          '「我全都要。」——人格版。',
+          '「四不像？那叫赛博全图鉴。」'
+        ],
+        desc: '好几个维度并列第一。你不是单一物种，你是开光的四不像。',
+        advice: '别急着贴一种标签，多面才是你的技能树。'
+      }
+    }
+
+    const labels = [
+      { icon: '🐟', name: '摸鱼', color: '#FF6B6B' },
+      { icon: '🎯', name: '显眼', color: '#4ECDC4' },
+      { icon: '🗡️', name: '怼人', color: '#FF9F43' },
+      { icon: '🎬', name: '内心戏', color: '#A29BFE' },
+      { icon: '💡', name: '脑洞', color: '#FDCB6E' }
+    ]
+
+    const order = ['sloth', 'peacock', 'hedgehog', 'rabbit', 'octopus', 'chimera']
+    let key = 'sloth'
+    let view = null
+
+    function roll() {
+      const a = animals[key]
+      view = {
+        ...a,
+        colleagueView: pick(a.colleagueViews),
+        suitedFor: pick(a.suitedFors),
+        avoidMoment: pick(a.avoidMoments),
+        quote: pick(a.quotes)
+      }
+    }
+
+    function render() {
+      const tabs = document.getElementById('tabs')
+      tabs.innerHTML = order.map(k => {
+        const a = animals[k]
+        const short = { sloth: '闪电', peacock: '孔雀', hedgehog: '刺猬', rabbit: '兔子', octopus: '章鱼哥', chimera: '四不像' }[k]
+        return `<button class="${k===key?'active':''}" data-key="${k}">${a.emoji} ${short}</button>`
+      }).join('')
+
+      const a = view
+      const rows = labels.map((l, i) => {
+        const score = a.scores[i]
+        const pct = Math.round(score / 30 * 100)
+        return `<div class="score-row">
+          <span class="score-label">${l.icon} ${l.name}</span>
+          <div class="score-track"><div class="score-fill" style="width:${pct}%;background:${l.color}"></div></div>
+          <span class="score-value">${score}</span>
+        </div>`
+      }).join('')
+
+      document.getElementById('card').innerHTML = `
+        <div class="animal-hero">${
+          a.image
+            ? `<img class="sibuxiang-art" src="${a.image}" alt="${a.name}" />`
+            : `<div class="animal-emoji">${a.emoji}</div>`
+        }</div>
+        <h1>${a.name}</h1>
+        <p class="subtitle">${a.subtitle}</p>
+        <div class="radar-placeholder">雷达图示意</div>
+        <div class="score-details">${rows}</div>
+        <div class="tags">${a.tags.map(t => `<span class="tag ${t[1]}">${t[0]}</span>`).join('')}</div>
+        <div class="info-block">
+          <div class="info-title">👀 同事眼中的你</div>
+          <p>${a.colleagueView}</p>
+        </div>
+        <div class="info-block good">
+          <div class="info-title">✨ 适合你</div>
+          <p>${a.suitedFor}</p>
+        </div>
+        <div class="info-block bad">
+          <div class="info-title">⚡ 避雷时刻</div>
+          <p>${a.avoidMoment}</p>
+        </div>
+        <blockquote class="quote">
+          <div class="quote-label">今日金句</div>
+          ${a.quote}
+        </blockquote>
+        <p class="advice">💡 ${a.advice}</p>
+        <button class="btn btn-primary" type="button">📋 复制分享文案</button>
+        <button class="btn btn-outline" type="button">📤 保存人格卡图片</button>
+        <div class="tip">
+          <p class="tip-text">觉得有趣？请作者喝瓶82年的可乐 👇</p>
+          <div class="qr">赞赏码</div>
+        </div>
+        <button class="btn btn-ghost" type="button">🔄 重新测试</button>
+      `
+    }
+
+    document.getElementById('tabs').addEventListener('click', function (e) {
+      const btn = e.target.closest('button[data-key]')
+      if (!btn) return
+      key = btn.getAttribute('data-key')
+      roll()
+      render()
+    })
+    document.getElementById('reroll').addEventListener('click', function () {
+      roll()
+      render()
+    })
+
+    roll()
+    render()
+  </script>
+</body>
+</html>

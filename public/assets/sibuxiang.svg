@@ -1,0 +1,82 @@
+﻿<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" fill="none">
+  <defs>
+    <linearGradient id="fur" x1="50" y1="50" x2="150" y2="170" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#FFE8C8"/>
+      <stop offset="1" stop-color="#F5C98A"/>
+    </linearGradient>
+    <linearGradient id="peach" x1="70" y1="90" x2="130" y2="150" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#FFF7EE"/>
+      <stop offset="1" stop-color="#FFE0C2"/>
+    </linearGradient>
+    <linearGradient id="plume" x1="130" y1="20" x2="175" y2="70" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#7FE3E0"/>
+      <stop offset="0.45" stop-color="#A78BFA"/>
+      <stop offset="1" stop-color="#FF8FA3"/>
+    </linearGradient>
+  </defs>
+
+  <!-- soft ground shadow -->
+  <ellipse cx="100" cy="178" rx="48" ry="8" fill="#C9D4E5" opacity="0.45"/>
+
+  <!-- octopus noodle tails (cute short) -->
+  <path d="M120 140 C138 136, 150 146, 148 158 C146 166, 136 164, 134 156 C132 164, 124 166, 120 158"
+        stroke="#FF9B8A" stroke-width="9" stroke-linecap="round" fill="none"/>
+  <path d="M120 140 C138 136, 150 146, 148 158 C146 166, 136 164, 134 156 C132 164, 124 166, 120 158"
+        stroke="#FFC4B8" stroke-width="4" stroke-linecap="round" fill="none"/>
+  <circle cx="148" cy="158" r="4.5" fill="#FFD2C8"/>
+  <circle cx="134" cy="156" r="4" fill="#FFD2C8"/>
+  <circle cx="120" cy="158" r="3.5" fill="#FFD2C8"/>
+
+  <!-- tiny feet -->
+  <ellipse cx="78" cy="158" rx="12" ry="8" fill="#E8B87A" stroke="#8A6A45" stroke-width="2"/>
+  <ellipse cx="118" cy="160" rx="12" ry="8" fill="#E8B87A" stroke="#8A6A45" stroke-width="2"/>
+
+  <!-- round chibi body -->
+  <circle cx="100" cy="128" r="42" fill="url(#fur)" stroke="#8A6A45" stroke-width="3"/>
+  <ellipse cx="102" cy="136" rx="26" ry="24" fill="url(#peach)"/>
+
+  <!-- soft hedgehog tufts (rounded, not sharp) -->
+  <path d="M70 108 C66 92, 74 88, 80 102" fill="#D4A574" stroke="#8A6A45" stroke-width="2"/>
+  <path d="M82 100 C80 82, 92 80, 94 98" fill="#E0B484" stroke="#8A6A45" stroke-width="2"/>
+  <path d="M98 98 C100 78, 112 80, 112 100" fill="#D4A574" stroke="#8A6A45" stroke-width="2"/>
+  <path d="M114 102 C120 86, 130 90, 124 108" fill="#E0B484" stroke="#8A6A45" stroke-width="2"/>
+
+  <!-- peacock plume (round blob) -->
+  <path d="M126 88 C144 58, 168 62, 170 84 C172 100, 152 106, 136 98 C150 92, 156 82, 148 74 C140 84, 132 88, 126 88 Z"
+        fill="url(#plume)" stroke="#8A6A45" stroke-width="2"/>
+  <circle cx="154" cy="80" r="6" fill="#FFE56D" stroke="#8A6A45" stroke-width="1.5"/>
+  <circle cx="154" cy="80" r="2.5" fill="#5B4B3A"/>
+
+  <!-- big chibi head -->
+  <circle cx="100" cy="78" r="40" fill="url(#fur)" stroke="#8A6A45" stroke-width="3"/>
+
+  <!-- bunny ears -->
+  <path d="M78 55 C72 22, 58 16, 54 30 C52 40, 64 58, 76 66 Z" fill="#FFD9A8" stroke="#8A6A45" stroke-width="2.5"/>
+  <path d="M78 55 C74 30, 64 26, 62 34 C60 42, 70 58, 78 64 Z" fill="#FFB7C8"/>
+  <path d="M122 54 C130 20, 146 16, 150 30 C152 42, 138 58, 124 66 Z" fill="#FFD9A8" stroke="#8A6A45" stroke-width="2.5"/>
+  <path d="M122 54 C128 28, 138 26, 140 34 C142 42, 132 56, 124 64 Z" fill="#FFB7C8"/>
+
+  <!-- tiny golden horn (cute stub) -->
+  <path d="M96 44 L100 26 L104 44" stroke="#E6B422" stroke-width="4" stroke-linecap="round" fill="none"/>
+  <circle cx="100" cy="24" r="4.5" fill="#FFE56D" stroke="#8A6A45" stroke-width="1.5"/>
+
+  <!-- mega sparkle eyes -->
+  <ellipse cx="86" cy="80" rx="10" ry="12" fill="#5B4B3A"/>
+  <ellipse cx="114" cy="80" rx="10" ry="12" fill="#5B4B3A"/>
+  <circle cx="83" cy="76" r="3.2" fill="#fff"/>
+  <circle cx="111" cy="76" r="3.2" fill="#fff"/>
+  <circle cx="89" cy="84" r="1.4" fill="#fff" opacity="0.9"/>
+  <circle cx="117" cy="84" r="1.4" fill="#fff" opacity="0.9"/>
+
+  <!-- blush -->
+  <ellipse cx="72" cy="92" rx="7" ry="4.5" fill="#FF9BB0" opacity="0.55"/>
+  <ellipse cx="128" cy="92" rx="7" ry="4.5" fill="#FF9BB0" opacity="0.55"/>
+
+  <!-- tiny nose + smile -->
+  <ellipse cx="100" cy="92" rx="3" ry="2.2" fill="#E89A7A"/>
+  <path d="M92 98 Q100 106 108 98" stroke="#8A6A45" stroke-width="2.4" stroke-linecap="round"/>
+
+  <!-- lazy paw wave -->
+  <ellipse cx="62" cy="130" rx="10" ry="8" fill="#E8B87A" stroke="#8A6A45" stroke-width="2"/>
+  <path d="M54 130 L50 134 M56 134 L54 138 M60 134 L60 139" stroke="#8A6A45" stroke-width="2" stroke-linecap="round"/>
+</svg>

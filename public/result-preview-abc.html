@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>结果页方案对比 A / B / C</title>
+  <style>
+    :root {
+      --pink: #e94560;
+      --bg: #eef1f6;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif;
+      background: var(--bg);
+      color: #1a1a2e;
+      padding: 24px 16px 48px;
+    }
+    h1.title {
+      text-align: center;
+      font-size: 22px;
+      margin: 0 0 8px;
+    }
+    .hint {
+      text-align: center;
+      color: #666;
+      font-size: 14px;
+      margin: 0 0 28px;
+    }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(280px, 1fr));
+      gap: 20px;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    @media (max-width: 960px) {
+      .grid { grid-template-columns: 1fr; max-width: 420px; }
+    }
+    .col-label {
+      text-align: center;
+      font-weight: 700;
+      font-size: 15px;
+      margin-bottom: 10px;
+    }
+    .col-label span {
+      display: inline-block;
+      background: #1a1a2e;
+      color: #fff;
+      border-radius: 999px;
+      padding: 4px 12px;
+      margin-right: 6px;
+      font-size: 12px;
+    }
+    .card {
+      background: #fff;
+      border-radius: 24px;
+      padding: 28px 22px;
+      box-shadow: 0 16px 40px rgba(0,0,0,.08);
+      text-align: center;
+    }
+    .emoji { font-size: 64px; line-height: 1; }
+    .name { font-size: 22px; font-weight: 700; margin: 8px 0 4px; }
+    .subtitle {
+      display: inline-block;
+      font-size: 13px;
+      color: var(--pink);
+      background: #fce8eb;
+      padding: 4px 12px;
+      border-radius: 999px;
+      margin-bottom: 12px;
+    }
+    .fake-radar {
+      width: 160px; height: 160px; margin: 8px auto 14px;
+      border-radius: 50%;
+      background:
+        radial-gradient(circle at 50% 50%, rgba(233,69,96,.25), transparent 55%),
+        conic-gradient(from 0deg, #ff6b6b, #4ecdc4, #ff9f43, #a29bfe, #fdcb6e, #ff6b6b);
+      opacity: .85;
+      position: relative;
+    }
+    .fake-radar::after {
+      content: "雷达示意";
+      position: absolute; inset: 0;
+      display: grid; place-items: center;
+      color: #fff; font-size: 13px; font-weight: 600;
+      text-shadow: 0 1px 4px rgba(0,0,0,.35);
+    }
+    .tags { display: flex; flex-wrap: wrap; gap: 6px; justify-content: center; margin: 0 0 14px; }
+    .tag {
+      font-size: 12px; padding: 4px 10px; border-radius: 999px;
+      background: #f5f5f7; color: #444;
+    }
+    .tag.hot { background: #fff3e0; color: #e67e22; }
+    .tag.cool { background: #e8f5e9; color: #2e7d32; }
+    .block {
+      text-align: left; background: #f8f9fb; border-radius: 14px;
+      padding: 12px 14px; margin: 0 0 10px; font-size: 13px; line-height: 1.55; color: #444;
+    }
+    .block b { color: #1a1a2e; display: block; margin-bottom: 4px; font-size: 12px; }
+    .quote {
+      font-size: 14px; color: #555; font-style: italic; margin: 10px 0;
+      border-left: 3px solid var(--pink); padding-left: 10px; text-align: left;
+    }
+    .btn {
+      display: block; width: 100%; border: none; border-radius: 999px;
+      padding: 12px; font-size: 15px; font-weight: 600; cursor: default; margin-top: 8px;
+    }
+    .btn-primary { background: var(--pink); color: #fff; }
+    .btn-ghost { background: transparent; border: 1px solid #ddd; color: #888; margin-top: 8px; }
+    .copy-box {
+      text-align: left; border: 1px dashed #ccc; border-radius: 12px;
+      padding: 10px 12px; font-size: 12px; color: #666; margin: 10px 0; background: #fafafa;
+    }
+    .vs {
+      display: flex; gap: 8px; margin: 10px 0;
+    }
+    .vs div {
+      flex: 1; border-radius: 12px; padding: 10px; font-size: 12px; text-align: left;
+    }
+    .vs .good { background: #e8f8f0; }
+    .vs .bad { background: #fdecee; }
+    .story-step {
+      text-align: left; font-size: 13px; padding: 8px 0; border-bottom: 1px dashed #eee;
+      opacity: .35;
+    }
+    .story-step.on { opacity: 1; color: var(--pink); font-weight: 600; }
+    .badge-anim {
+      display: inline-block; animation: pop 1.2s ease infinite alternate;
+    }
+    @keyframes pop {
+      from { transform: scale(1); }
+      to { transform: scale(1.08); }
+    }
+    .pick {
+      margin-top: 36px; text-align: center; font-size: 15px; color: #333;
+    }
+    .pick strong { color: var(--pink); }
+  </style>
+</head>
+<body>
+  <h1 class="title">结果页三种方案预览</h1>
+  <p class="hint">左右对比（手机窄屏会上下排列）。看完回我：选 A / B / C，或「A 为主加点 B」。</p>
+
+  <div class="grid">
+    <!-- A -->
+    <div>
+      <div class="col-label"><span>A</span>趣味人格卡</div>
+      <div class="card">
+        <div class="emoji">🐨</div>
+        <div class="name">会议室佛系考拉</div>
+        <div class="subtitle">隐身系生存专家 · 存在感 -99</div>
+        <div class="fake-radar"></div>
+        <div class="tags">
+          <span class="tag hot">摸鱼天花板</span>
+          <span class="tag">内心戏中等</span>
+          <span class="tag cool">显眼包绝缘体</span>
+        </div>
+        <div class="block">
+          <b>同事眼中的你</b>
+          「这人是不是没来开会？」——其实你一直坐在角落喝水。
+        </div>
+        <div class="block">
+          <b>适合的场景</b>
+          深夜改需求、安静写周报、当会议气氛组隐形人
+        </div>
+        <div class="block">
+          <b>劝分场景</b>
+          被点名发言、团建自我介绍、抢麦复盘
+        </div>
+        <p class="quote">「只要我不说话，老板就暂时忘了我。」</p>
+        <button class="btn btn-primary">📤 保存人格卡</button>
+        <button class="btn btn-ghost">重新测试</button>
+      </div>
+    </div>
+
+    <!-- B -->
+    <div>
+      <div class="col-label"><span>B</span>社交对比向</div>
+      <div class="card">
+        <div class="emoji">🐨</div>
+        <div class="name">会议室佛系考拉</div>
+        <div class="fake-radar"></div>
+        <div class="vs">
+          <div class="good"><b>最强维度</b><br>🐟 摸鱼の段位<br>超过 82% 打工人</div>
+          <div class="bad"><b>最弱维度</b><br>🎯 显眼包指数<br>会议里像空气</div>
+        </div>
+        <div class="block">
+          <b>像不像你同事？</b>
+          如果你身边有个「从来不举手但活总能交」的人——可能就是你。
+        </div>
+        <div class="copy-box">
+          【可复制】我测出是「会议室佛系考拉」🐨<br>
+          摸鱼拉满，存在感清零。你是什么动物？
+        </div>
+        <button class="btn btn-primary">📋 复制去朋友圈</button>
+        <button class="btn btn-ghost">📤 保存图片</button>
+        <button class="btn btn-ghost">重新测试</button>
+      </div>
+    </div>
+
+    <!-- C -->
+    <div>
+      <div class="col-label"><span>C</span>轻动画故事向</div>
+      <div class="card">
+        <div class="emoji badge-anim">🐨</div>
+        <div class="name">会议室佛系考拉</div>
+        <p style="font-size:13px;color:#888;margin:4px 0 12px">正在揭晓你的职场画像…</p>
+        <div class="story-step on">① 摸鱼段位：隐藏大佬 ✅</div>
+        <div class="story-step on">② 显眼指数：空气滤镜 ✅</div>
+        <div class="story-step">③ 怼人冷却：加载中…</div>
+        <div class="story-step">④ 内心戏院：待揭晓</div>
+        <div class="story-step">⑤ 脑洞系数：待揭晓</div>
+        <div class="block" style="margin-top:14px">
+          <b>彩蛋</b>
+          连续 3 次开会不发言，成就已点亮：【隐形斗篷】
+        </div>
+        <button class="btn btn-primary">继续揭晓 ▶</button>
+        <button class="btn btn-ghost">跳过动画，看完整结果</button>
+      </div>
+    </div>
+  </div>
+
+  <p class="pick">看完告诉我选 <strong>A</strong> / <strong>B</strong> / <strong>C</strong>，或怎么组合。</p>
+</body>
+</html>

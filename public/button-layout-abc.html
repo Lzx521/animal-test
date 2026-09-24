@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>结果页底部按钮方案对比</title>
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif;
+      background: #e8edf5;
+      padding: 20px 16px 48px;
+      color: #1a1a2e;
+    }
+    h1 { text-align: center; font-size: 20px; margin: 0 0 8px; }
+    .hint { text-align: center; color: #666; font-size: 13px; margin: 0 0 24px; }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(260px, 1fr));
+      gap: 16px;
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+    @media (max-width: 900px) {
+      .grid { grid-template-columns: 1fr; max-width: 380px; }
+    }
+    .col-title {
+      text-align: center;
+      font-size: 14px;
+      font-weight: 700;
+      margin-bottom: 10px;
+    }
+    .col-title span {
+      display: inline-block;
+      background: #1a1a2e;
+      color: #fff;
+      border-radius: 999px;
+      padding: 2px 10px;
+      font-size: 12px;
+      margin-right: 6px;
+    }
+    .phone {
+      background: #fff;
+      border-radius: 20px;
+      padding: 18px 16px 20px;
+      box-shadow: 0 12px 32px rgba(0,0,0,.08);
+    }
+    .fake-top {
+      text-align: center;
+      opacity: .35;
+      font-size: 12px;
+      margin-bottom: 12px;
+    }
+    .advice {
+      background: #fce8eb;
+      color: #e94560;
+      border-radius: 12px;
+      padding: 10px 12px;
+      font-size: 13px;
+      margin-bottom: 14px;
+      line-height: 1.5;
+    }
+    .btn {
+      width: 100%;
+      border-radius: 50px;
+      padding: 12px;
+      font-size: 14px;
+      font-weight: 600;
+      margin-bottom: 10px;
+      text-align: center;
+    }
+    .btn-primary { background: #e94560; color: #fff; border: none; }
+    .btn-outline { background: #fff; color: #e94560; border: 1.5px solid #e94560; }
+    .btn-ghost { background: #fff; color: #888; border: 1px solid #ddd; }
+    .btn-dash-blue {
+      background: #f5f7ff; color: #4c6ef5;
+      border: 1px dashed #b6c2ff;
+    }
+    .btn-dash-gold {
+      background: #fff8f0; color: #c27803;
+      border: 1px dashed #f0c78a;
+    }
+    .links {
+      margin-top: 6px;
+      padding-top: 10px;
+      border-top: 1px solid #f0f0f0;
+      text-align: center;
+    }
+    .link {
+      display: block;
+      font-size: 13px;
+      color: #666;
+      padding: 8px 0;
+      text-decoration: none;
+    }
+    .link.blue { color: #4c6ef5; }
+    .link.gold { color: #c27803; }
+    .link.muted { color: #999; font-size: 12px; }
+    .row2 {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 10px;
+    }
+    .row2 .btn { margin-bottom: 0; flex: 1; font-size: 13px; padding: 11px 8px; }
+    .more {
+      background: #f7f7f8;
+      border-radius: 12px;
+      padding: 10px 12px;
+      margin-top: 4px;
+      font-size: 13px;
+      color: #555;
+    }
+    .more div { padding: 8px 0; border-bottom: 1px solid #eee; }
+    .more div:last-child { border-bottom: none; }
+    .tag-rec {
+      display: inline-block;
+      background: #e94560;
+      color: #fff;
+      font-size: 11px;
+      border-radius: 999px;
+      padding: 2px 8px;
+      margin-left: 4px;
+      vertical-align: middle;
+    }
+    .pick {
+      text-align: center;
+      margin-top: 28px;
+      font-size: 14px;
+      color: #333;
+    }
+  </style>
+</head>
+<body>
+  <h1>结果页底部按钮 · 三种设计</h1>
+  <p class="hint">只看底部操作区。看完回聊天发 A / B / C。</p>
+
+  <div class="grid">
+    <!-- A -->
+    <div>
+      <div class="col-title"><span>A</span>主次分层 <span class="tag-rec">推荐</span></div>
+      <div class="phone">
+        <div class="fake-top">……上面是结果内容……</div>
+        <div class="advice">💡 灵感很好，配上一点点落地清单会更香。</div>
+        <div class="btn btn-primary">📋 复制分享文案</div>
+        <div class="btn btn-outline">📤 保存人格卡图片</div>
+        <div class="links">
+          <a class="link blue" href="#">🧠 查看对应大五人格</a>
+          <a class="link gold" href="#">☕ 请作者喝瓶82年的可乐</a>
+          <a class="link muted" href="#">重新测试</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- B -->
+    <div>
+      <div class="col-title"><span>B</span>更多菜单</div>
+      <div class="phone">
+        <div class="fake-top">……上面是结果内容……</div>
+        <div class="advice">💡 灵感很好，配上一点点落地清单会更香。</div>
+        <div class="btn btn-primary">📋 复制分享文案</div>
+        <div class="btn btn-ghost">⋯ 更多</div>
+        <div class="more">
+          <div>📤 保存人格卡图片</div>
+          <div>🧠 查看对应大五人格</div>
+          <div>☕ 请作者喝瓶82年的可乐</div>
+          <div>🔄 重新测试</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- C -->
+    <div>
+      <div class="col-title"><span>C</span>双列紧凑</div>
+      <div class="phone">
+        <div class="fake-top">……上面是结果内容……</div>
+        <div class="advice">💡 灵感很好，配上一点点落地清单会更香。</div>
+        <div class="row2">
+          <div class="btn btn-primary">📋 复制分享</div>
+          <div class="btn btn-outline">📤 保存图片</div>
+        </div>
+        <div class="links">
+          <a class="link blue" href="#">🧠 大五人格对照</a>
+          <a class="link gold" href="#">☕ 82年的可乐</a>
+          <a class="link muted" href="#">重新测试</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <p class="pick">选定后直接回：<strong>A</strong> / <strong>B</strong> / <strong>C</strong></p>
+</body>
+</html>
